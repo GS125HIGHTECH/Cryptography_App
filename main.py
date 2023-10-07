@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication
+from PyQt5.QtGui import QClipboard
 
 
 class Ui_MainWindow(object):
@@ -13,7 +14,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(200, 30, 400, 60))
+        self.label.setGeometry(QtCore.QRect(200, 20, 400, 60))
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
         font.setPointSize(16)
@@ -24,7 +25,7 @@ class Ui_MainWindow(object):
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.radioButton = QtWidgets.QRadioButton(self.centralwidget)
-        self.radioButton.setGeometry(QtCore.QRect(20, 130, 180, 30))
+        self.radioButton.setGeometry(QtCore.QRect(20, 100, 180, 30))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(True)
@@ -34,7 +35,7 @@ class Ui_MainWindow(object):
         self.radioButton.setChecked(True)
         self.radioButton.setObjectName("radioButton")
         self.radioButton_2 = QtWidgets.QRadioButton(self.centralwidget)
-        self.radioButton_2.setGeometry(QtCore.QRect(20, 170, 180, 30))
+        self.radioButton_2.setGeometry(QtCore.QRect(20, 150, 180, 30))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(True)
@@ -44,7 +45,7 @@ class Ui_MainWindow(object):
         self.radioButton_2.setChecked(False)
         self.radioButton_2.setObjectName("radioButton_2")
         self.radioButton_3 = QtWidgets.QRadioButton(self.centralwidget)
-        self.radioButton_3.setGeometry(QtCore.QRect(20, 210, 180, 30))
+        self.radioButton_3.setGeometry(QtCore.QRect(20, 200, 180, 30))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(True)
@@ -57,12 +58,23 @@ class Ui_MainWindow(object):
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(610, 270, 150, 40))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(12)
         font.setBold(True)
         font.setWeight(75)
         self.pushButton.setFont(font)
         self.pushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.confirm)
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2.setGeometry(QtCore.QRect(662, 523, 120, 30))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.pushButton_2.setFont(font)
+        self.pushButton_2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton_2.setObjectName("pushButton2")
+        self.pushButton_2.clicked.connect(self.copy_text)
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(200, 270, 400, 40))
         font = QtGui.QFont()
@@ -91,7 +103,7 @@ class Ui_MainWindow(object):
         self.textEdit.setObjectName("textEdit")
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.scrollArea_2 = QtWidgets.QScrollArea(self.centralwidget)
-        self.scrollArea_2.setGeometry(QtCore.QRect(20, 330, 760, 200))
+        self.scrollArea_2.setGeometry(QtCore.QRect(20, 320, 760, 200))
         self.scrollArea_2.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName("scrollArea_2")
@@ -162,6 +174,7 @@ class Ui_MainWindow(object):
         self.radioButton_2.setText(_translate("MainWindow", "ROT13"))
         self.radioButton_3.setText(_translate("MainWindow", "Base64"))
         self.pushButton.setText(_translate("MainWindow", "Confirm"))
+        self.pushButton_2.setText(_translate("MainWindow", "Copy"))
         self.label_2.setText(_translate("MainWindow", "Result:"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuExit.setTitle(_translate("MainWindow", "Edit"))
@@ -210,6 +223,15 @@ class Ui_MainWindow(object):
         if reply == QMessageBox.Yes:
             self.textEdit.clear()
             self.textEdit_2.clear()
+
+    def copy_text(self):
+        result_text = self.textEdit_2.toPlainText()
+        clipboard = QApplication.clipboard()
+        clipboard.setText(result_text)
+
+    def confirm(self):
+        input_text = self.textEdit.toPlainText()
+        self.textEdit_2.setPlainText(input_text)
 
 
 if __name__ == "__main__":

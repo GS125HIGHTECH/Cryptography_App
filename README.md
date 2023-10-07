@@ -1,5 +1,4 @@
 # PrWwWT_PROJECT
-Cryptography App
 
 # Aplikacja Kryptograficzna
 

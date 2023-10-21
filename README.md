@@ -22,8 +22,6 @@ Aplikacja Kryptograficzna to narzędzie umożliwiające kodowanie i dekodowanie 
 ## Inne opcje
 
 - "Edit" -> "Undo" i "Edit" -> "Redo" umożliwiają cofanie i przywracanie działań na wprowadzonym tekście.
-- "Edit" -> "Copy" pozwala na kopiowanie zaznaczonego tekstu.
-- "Edit" -> "Paste" umożliwia wklejanie tekstu ze schowka.
 
 ## Licencja
 

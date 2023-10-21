@@ -1,7 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication
-from PyQt5.QtGui import QClipboard
-
+import base64
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -75,6 +74,12 @@ class Ui_MainWindow(object):
         self.pushButton_2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton_2.setObjectName("pushButton2")
         self.pushButton_2.clicked.connect(self.copy_text)
+        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_3.setGeometry(QtCore.QRect(662, 40, 120, 30))
+        self.pushButton_3.setFont(font)
+        self.pushButton_3.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton_3.setObjectName("pushButton3")
+        self.pushButton_3.clicked.connect(self.erase_text)
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(200, 270, 400, 40))
         font = QtGui.QFont()
@@ -101,6 +106,7 @@ class Ui_MainWindow(object):
         self.textEdit.setFont(font)
         self.textEdit.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.textEdit.setObjectName("textEdit")
+        self.textEdit.setStyleSheet("background-color: white; color: black;")
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.scrollArea_2 = QtWidgets.QScrollArea(self.centralwidget)
         self.scrollArea_2.setGeometry(QtCore.QRect(20, 320, 760, 200))
@@ -133,6 +139,12 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.encode_decode = QtWidgets.QComboBox(self.centralwidget)
+        self.encode_decode.setGeometry(QtCore.QRect(15, 40, 180, 30))
+        self.encode_decode.setObjectName("encode_decode")
+        self.encode_decode.addItem("Encode")
+        self.encode_decode.addItem("Decode")
+        self.encode_decode.setCurrentIndex(0)
         self.actionSave = QtWidgets.QAction(MainWindow)
         self.actionSave.setObjectName("actionSave")
         self.actionSave.triggered.connect(self.save_file)
@@ -148,23 +160,30 @@ class Ui_MainWindow(object):
         self.actionRedo = QtWidgets.QAction(MainWindow)
         self.actionRedo.setObjectName("actionRedo")
         self.actionRedo.triggered.connect(self.textEdit.redo)
-        self.actionCopy = QtWidgets.QAction(MainWindow)
-        self.actionCopy.setObjectName("actionCopy")
-        self.actionPaste = QtWidgets.QAction(MainWindow)
-        self.actionPaste.setObjectName("actionPaste")
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionSave)
+        self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExit)
         self.menuExit.addAction(self.actionUndo)
         self.menuExit.addAction(self.actionRedo)
-        self.menuExit.addSeparator()
-        self.menuExit.addAction(self.actionCopy)
-        self.menuExit.addAction(self.actionPaste)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuExit.menuAction())
 
+        self.encryption_type = "Vigenere"
+        self.radioButton.toggled.connect(self.set_encryption_type)
+        self.radioButton_2.toggled.connect(self.set_encryption_type)
+        self.radioButton_3.toggled.connect(self.set_encryption_type)
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def set_encryption_type(self):
+        if self.radioButton.isChecked():
+            self.encryption_type = "Vigenere"
+        elif self.radioButton_2.isChecked():
+            self.encryption_type = "ROT13"
+        elif self.radioButton_3.isChecked():
+            self.encryption_type = "Base64"
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -175,6 +194,7 @@ class Ui_MainWindow(object):
         self.radioButton_3.setText(_translate("MainWindow", "Base64"))
         self.pushButton.setText(_translate("MainWindow", "Confirm"))
         self.pushButton_2.setText(_translate("MainWindow", "Copy"))
+        self.pushButton_3.setText(_translate("MainWindow", "Erase"))
         self.label_2.setText(_translate("MainWindow", "Result:"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuExit.setTitle(_translate("MainWindow", "Edit"))
@@ -193,12 +213,6 @@ class Ui_MainWindow(object):
         self.actionRedo.setText(_translate("MainWindow", "Redo"))
         self.actionRedo.setStatusTip(_translate("MainWindow", "Redo an action"))
         self.actionRedo.setShortcut(_translate("MainWindow", "Ctrl+Shift+Z"))
-        self.actionCopy.setText(_translate("MainWindow", "Copy"))
-        self.actionCopy.setStatusTip(_translate("MainWindow", "Copy text"))
-        self.actionCopy.setShortcut(_translate("MainWindow", "Ctrl+C"))
-        self.actionPaste.setText(_translate("MainWindow", "Paste"))
-        self.actionPaste.setStatusTip(_translate("MainWindow", "Paste text"))
-        self.actionPaste.setShortcut(_translate("MainWindow", "Ctrl+V"))
 
     def save_file(self):
         options = QFileDialog.Options()
@@ -224,14 +238,63 @@ class Ui_MainWindow(object):
             self.textEdit.clear()
             self.textEdit_2.clear()
 
+    def erase_text(self):
+        self.textEdit.clear()
+
     def copy_text(self):
         result_text = self.textEdit_2.toPlainText()
         clipboard = QApplication.clipboard()
         clipboard.setText(result_text)
 
+    def encode_rot13(self, text):
+        encoded_text = ""
+        for char in text:
+            if char.isalpha():
+                if char.isupper():
+                    encoded_char = chr(((ord(char) - ord('A') + 13) % 26) + ord('A'))
+                else:
+                    encoded_char = chr(((ord(char) - ord('a') + 13) % 26) + ord('a'))
+                encoded_text += encoded_char
+            else:
+                encoded_text += char
+        return encoded_text
+
+    def decode_rot13(self, text):
+        return self.encode_rot13(text)
+
     def confirm(self):
         input_text = self.textEdit.toPlainText()
-        self.textEdit_2.setPlainText(input_text)
+        operation = self.encode_decode.currentText()
+
+        if operation == "Encode":
+            if self.radioButton.isChecked():
+                # Vigenere Cipher Encoding
+                # Tutaj dodaj kod do szyfrowania Vigenere
+                pass
+            elif self.radioButton_2.isChecked():
+                encoded_text = self.encode_rot13(input_text)
+                self.textEdit_2.setPlainText(encoded_text)
+                pass
+            elif self.radioButton_3.isChecked():
+                # Base64 Encoding
+                encoded_text = base64.b64encode(input_text.encode()).decode()
+                self.textEdit_2.setPlainText(encoded_text)
+        else:  # Jeśli wybrano "Decode"
+            if self.radioButton.isChecked():
+                # Vigenere Cipher Decoding
+                # Tutaj dodaj kod do deszyfrowania Vigenere
+                pass
+            elif self.radioButton_2.isChecked():
+                decoded_text = self.decode_rot13(input_text)
+                self.textEdit_2.setPlainText(decoded_text)
+                pass
+            elif self.radioButton_3.isChecked():
+                # Base64 Decoding
+                try:
+                    decoded_text = base64.b64decode(input_text).decode()
+                    self.textEdit_2.setPlainText(decoded_text)
+                except Exception as e:
+                    self.textEdit_2.setPlainText("Error decoding Base64: " + str(e))
 
 
 if __name__ == "__main__":

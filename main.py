@@ -412,7 +412,6 @@ class Ui_MainWindow(object):
                 self.textEdit_2.setPlainText(encoded_text)
                 pass
             elif self.radioButton_3.isChecked():
-                # Base64 Encoding
                 try:
                     encoded_text = base64.b64encode(input_text.encode()).decode()
                     self.textEdit_2.setPlainText(encoded_text)
@@ -436,7 +435,6 @@ class Ui_MainWindow(object):
                 self.textEdit_2.setPlainText(decoded_text)
                 pass
             elif self.radioButton_3.isChecked():
-                # Base64 Decoding
                 try:
                     decoded_text = base64.b64decode(input_text).decode()
                     self.textEdit_2.setPlainText(decoded_text)

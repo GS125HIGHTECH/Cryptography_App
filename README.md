@@ -12,8 +12,9 @@ Aplikacja Kryptograficzna to narzędzie umożliwiające kodowanie i dekodowanie 
 
 - **Kodowanie Base64**: Możesz wprowadzić tekst i zakodować go za pomocą kodowania Base64.
 - **Dekodowanie Base64**: Możesz wprowadzić zakodowany tekst w formacie Base64 i odkodować go, aby uzyskać oryginalny tekst.
-- **Szyfr Vigenera**: Możesz użyć szyfru Vigenera do zakodowania lub odkodowania tekstu, wybierając odpowiednią opcję.
+- **Szyfr Vigenera**: Możesz użyć szyfru Vigenera do zakodowania lub odkodowania tekstu przy pomocy wpisanego klucza, wybierając odpowiednią opcję.
 - **ROT13**: Ta prosta metoda polega na przesunięciu liter w tekście o 13 miejsc w alfabecie, co pozwala na szybkie kodowanie i dekodowanie.
+- **Pogoda**: Aplikacja pozwala na wpisanie miasta i sprawdzenie warunków pogodowych dla niego.
 
 ## Zapisywanie wyników
 

@@ -1,10 +1,82 @@
+import requests
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication, QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton
 import base64
+
+
+class WeatherDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.city_input = None
+        self.weather_label = None
+        self.init_ui()
+
+    def init_ui(self):
+        layout = QVBoxLayout()
+
+        city_label = QLabel('City:')
+        self.city_input = QLineEdit()
+        layout.addWidget(city_label)
+        layout.addWidget(self.city_input)
+
+        self.weather_label = QLabel('')
+        self.weather_label.setFixedSize(200, 60)
+        self.weather_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.weather_label)
+
+        get_weather_button = QPushButton('Get the weather', self)
+        get_weather_button.setCursor(Qt.PointingHandCursor)
+        get_weather_button.setFixedWidth(120)
+        get_weather_button.clicked.connect(self.get_weather)
+        layout.addWidget(get_weather_button, alignment=Qt.AlignCenter)
+
+        self.setLayout(layout)
+        self.setWindowTitle('Weather')
+        self.setWindowFlag(Qt.WindowStaysOnTopHint)
+        self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
+
+    def get_weather(self):
+        city = self.city_input.text()
+        if not city:
+            self.weather_label.clear()
+            return
+
+        if not city.isalpha():
+            QMessageBox.warning(self, "Warning", "Please enter a valid location (only alphabetic characters).")
+            self.city_input.clear()
+            self.weather_label.clear()
+            return
+
+        api_key = '4eff64662ca2c7a5056601b151c36bca'
+        base_url = 'http://api.openweathermap.org/data/2.5/weather'
+        params = {'q': city, 'appid': api_key}
+
+        try:
+            response = requests.get(base_url, params=params)
+            data = response.json()
+
+            if response.status_code == 200:
+                weather_description = data['weather'][0]['description']
+                temperature = data['main']['temp'] - 273.15  # Kelvin to Celsius
+                self.weather_label.setText(f'Weather in {city}:\n {weather_description}\n Temperature: {temperature:.2f} °C')
+            else:
+                self.weather_label.setText(f'Failed to download weather.\n Error code: {response.status_code}')
+
+        except Exception as e:
+            self.weather_label.setText(f'An error occurred!')
+            print(f'An error occurred: {str(e)}')
+
+
+def show_weather_dialog():
+    dialog = WeatherDialog(MainWindow)
+    dialog.exec_()
 
 
 class Ui_MainWindow(object):
     def __init__(self):
+        self.weather_button = None
         self.textEdit_3 = None
         self.scrollAreaWidgetContents_3 = None
         self.encryption_type = None
@@ -56,6 +128,7 @@ class Ui_MainWindow(object):
         self.label.setAutoFillBackground(False)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
+
         self.radioButton = QtWidgets.QRadioButton(self.centralwidget)
         self.radioButton.setGeometry(QtCore.QRect(20, 100, 180, 30))
         font = QtGui.QFont()
@@ -66,6 +139,7 @@ class Ui_MainWindow(object):
         self.radioButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.radioButton.setChecked(True)
         self.radioButton.setObjectName("radioButton")
+
         self.radioButton_2 = QtWidgets.QRadioButton(self.centralwidget)
         self.radioButton_2.setGeometry(QtCore.QRect(20, 150, 180, 30))
         font = QtGui.QFont()
@@ -76,6 +150,7 @@ class Ui_MainWindow(object):
         self.radioButton_2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.radioButton_2.setChecked(False)
         self.radioButton_2.setObjectName("radioButton_2")
+
         self.radioButton_3 = QtWidgets.QRadioButton(self.centralwidget)
         self.radioButton_3.setGeometry(QtCore.QRect(20, 200, 180, 30))
         font = QtGui.QFont()
@@ -87,6 +162,7 @@ class Ui_MainWindow(object):
         self.radioButton_3.setCheckable(True)
         self.radioButton_3.setChecked(False)
         self.radioButton_3.setObjectName("radioButton_3")
+
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setStyleSheet("QPushButton { color: green; }")
         self.pushButton.setGeometry(QtCore.QRect(640, 285, 150, 40))
@@ -98,6 +174,7 @@ class Ui_MainWindow(object):
         self.pushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton.setObjectName("pushButton")
         self.pushButton.clicked.connect(self.confirm)
+
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(670, 563, 120, 30))
         font = QtGui.QFont()
@@ -108,6 +185,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton_2.setObjectName("pushButton2")
         self.pushButton_2.clicked.connect(self.copy_text)
+
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_3.setGeometry(QtCore.QRect(670, 66, 120, 30))
         self.pushButton_3.setStyleSheet("QPushButton { color: red; }")
@@ -115,6 +193,14 @@ class Ui_MainWindow(object):
         self.pushButton_3.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton_3.setObjectName("pushButton3")
         self.pushButton_3.clicked.connect(self.erase_text)
+
+        self.weather_button = QtWidgets.QPushButton(self.centralwidget)
+        self.weather_button.setGeometry(QtCore.QRect(340, 570, 120, 30))
+        self.weather_button.setFont(font)
+        self.weather_button.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.weather_button.setObjectName("weather_button")
+        self.weather_button.clicked.connect(show_weather_dialog)
+        
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(200, 315, 400, 40))
         font = QtGui.QFont()
@@ -126,6 +212,7 @@ class Ui_MainWindow(object):
         self.label_2.setAutoFillBackground(False)
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.label_2.setObjectName("label_2")
+
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         self.label_3.setGeometry(QtCore.QRect(280, 10, 100, 40))
         font = QtGui.QFont()
@@ -270,6 +357,7 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Confirm"))
         self.pushButton_2.setText(_translate("MainWindow", "Copy"))
         self.pushButton_3.setText(_translate("MainWindow", "Erase"))
+        self.weather_button.setText(_translate("MainWindow", "Weather"))
         self.label_2.setText(_translate("MainWindow", "Result:"))
         self.label_3.setText(_translate("MainWindow", "Key:"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))

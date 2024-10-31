@@ -4,7 +4,7 @@
 
 ## Description
 
-The Cryptography Application is a tool that enables encoding and decoding of text using three different methods: Base64, Vigenère cipher, and ROT13.
+The Cryptography Application is a Python tool that enables encoding and decoding text using three different methods: Base64, Vigenère cipher, and ROT13.
 
 ## Features
 

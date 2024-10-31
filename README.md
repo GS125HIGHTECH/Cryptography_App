@@ -1,31 +1,29 @@
-# PrWwWT_PROJECT
-
-# Aplikacja Kryptograficzna
+# Cryptography App
 
 ![Cryptography App](encryption.png)
 
-## Opis
+## Description
 
-Aplikacja Kryptograficzna to narzędzie umożliwiające kodowanie i dekodowanie tekstu przy użyciu trzech różnych metod: Base64, szyfru Vigenera i ROT13.
+The Cryptography Application is a tool that enables encoding and decoding of text using three different methods: Base64, Vigenère cipher, and ROT13.
 
-## Funkcje
+## Features
 
-- **Kodowanie Base64**: Możesz wprowadzić tekst i zakodować go za pomocą kodowania Base64.
-- **Dekodowanie Base64**: Możesz wprowadzić zakodowany tekst w formacie Base64 i odkodować go, aby uzyskać oryginalny tekst.
-- **Szyfr Vigenera**: Możesz użyć szyfru Vigenera do zakodowania lub odkodowania tekstu przy pomocy wpisanego klucza, wybierając odpowiednią opcję.
-- **ROT13**: Ta prosta metoda polega na przesunięciu liter w tekście o 13 miejsc w alfabecie, co pozwala na szybkie kodowanie i dekodowanie.
-- **Pogoda**: Aplikacja pozwala na wpisanie miasta i sprawdzenie warunków pogodowych dla niego.
+- **Base64 Encoding**: You can input text and encode it using Base64 encoding.
+- **Base64 Decoding**: You can input Base64-encoded text and decode it to retrieve the original text.
+- **Vigenère Cipher**: You can use the Vigenère cipher to encode or decode text with a specified key by choosing the appropriate option.
+- **ROT13**: This simple method shifts letters in the text by 13 positions in the alphabet, allowing for quick encoding and decoding.
+- **Weather**: The app allows you to enter a city and check the current weather conditions for it.
 
-## Zapisywanie wyników
+## Saving Results
 
-- Możesz zapisać wynik do pliku, wybierając "File" -> "Save" z menu.
+- You can save the result to a file by selecting "File" -> "Save" from the menu.
 
-## Inne opcje
+## Additional Options
 
-- "Edit" -> "Undo" i "Edit" -> "Redo" umożliwiają cofanie i przywracanie działań na wprowadzonym tekście.
+- "Edit" -> "Undo" and "Edit" -> "Redo" allow you to undo and redo actions on the entered text.
 
-## Licencja
+## License
 
-Ten projekt jest objęty licencją [MIT](LICENSE).
+This project is licensed under the [MIT](LICENSE).
 
 ---
